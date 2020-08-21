@@ -57,7 +57,7 @@
                 <TextBlock Text="秒" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Gray" FontSize="15" FontFamily="Roman"/>
             </StackPanel>
             <StackPanel Margin="10 10 0 0"  Orientation="Horizontal">
-                <TextBlock Text="{Binding WorkMessage}" MaxWidth="280" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="Gray" FontSize="15" FontFamily="Roman"/>
+                <TextBlock Text="{Binding WorkMessage}" Foreground="{Binding Foreground}" MaxWidth="280" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="15" FontFamily="Roman"/>
                 <pu:Loading LoadingStyle="Classic" Width="40" Height="40" IsRunning="{Binding LoadingIsRuning}"/>
             </StackPanel>
         </StackPanel>

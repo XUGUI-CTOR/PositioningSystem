@@ -1,0 +1,138 @@
+﻿<pu:WindowX x:Class="Position_BulletinBoard.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:pu="clr-namespace:Panuon.UI.Silver;assembly=Panuon.UI.Silver"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:cmd="clr-namespace:Position_BulletinBoard.Commands"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Position_BulletinBoard"
+        x:Name="window"
+        mc:Ignorable="d"
+        Style="{StaticResource NeteaseMusicWindow}"
+        Title="设置" Height="720" Width="1280">
+    <pu:WindowX.DataContext>
+        <Binding Path="Setting" Source="{StaticResource Locator}"/>
+    </pu:WindowX.DataContext>
+    <pu:WindowXCaption.Header>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock FontSize="20"
+                       FontWeight="Light"
+                       VerticalAlignment="Center"
+                       Margin="15,0,30,0"
+                       Foreground="White"
+                       Text="{Binding Path=Title,RelativeSource={RelativeSource AncestorType={x:Type pu:WindowX},Mode=FindAncestor}}" />
+        </StackPanel>
+    </pu:WindowXCaption.Header>
+    <Grid Background="#FF333333">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <TabControl  x:Name="LeftTabControl" 
+                     pu:TabControlHelper.ItemHeight="65"
+                     pu:TabControlHelper.ItemPadding="20 0"
+                     pu:TabControlHelper.SelectedForeground="LightGray"
+                     pu:TabControlHelper.TabControlStyle="Classic"
+                     TabStripPlacement="Left">
+            <TabControl.Items>
+                <TabItem Header="库区坐标信息" Foreground="Gray" FontSize="25">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="20 0 0 0" Orientation="Horizontal">
+                            <Button Background="#C800FF35"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding AddNew}"
+                            FontSize="20" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#97F8A5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe664;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="新增" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Background="#C8F64E34"
+                                    Command="{Binding RemoveCommand}"
+                                    VerticalAlignment="Center"
+                            FontSize="20" Margin="30 0 0 0" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#F64E34">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe66f;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="删除" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <DataGrid Margin="10 0 2 0" Grid.Row="1" 
+                                  
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  ItemsSource="{Binding KQZBXXB}"
+                                  SelectedItem="{Binding SelectedKQXX}"
+                                  CanUserSortColumns="False"
+                                  pu:DataGridHelper.HeaderMinHeight="40"
+                                  pu:DataGridHelper.ResizeThumbThickness="1"
+                                  pu:DataGridHelper.SelectedBackground="#44B5B5B5"
+                                  pu:DataGridHelper.HoverBackground="#22B5B5B5">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="仓库编号"  Binding="{Binding cCKBH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区编号"  Binding="{Binding cKuq,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶1_X"  Binding="{Binding nKQZB_X1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶1_Y"  Binding="{Binding nKQZB_Y1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶2_X"  Binding="{Binding nKQZB_X2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶2_Y"  Binding="{Binding nKQZB_Y2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶3_X"  Binding="{Binding nKQZB_X3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶3_Y"  Binding="{Binding nKQZB_Y3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶4_X"  Binding="{Binding nKQZB_X4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶4_Y"  Binding="{Binding nKQZB_Y4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="运行时间配置" Foreground="Gray" FontSize="25">
+                    <Grid>
+                        
+                    </Grid>
+                </TabItem>
+            </TabControl.Items>
+        </TabControl>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <Button Background="#C800FF35"
+                            VerticalAlignment="Center"
+                            Command="{Binding SaveCommand}"
+                            FontSize="20" Padding="10 4"
+                            pu:ButtonHelper.HoverBrush="#97F8A5">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xe6b6;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                        <TextBlock Margin="10 0 0 0" Text="保存" FontSize="20"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button Background="#C8FF0000"
+                            VerticalAlignment="Center"
+                            Command="{x:Static cmd:WindowCommands.CloseWindow}"
+                            CommandParameter="{Binding RelativeSource={x:Static RelativeSource.Self}}"        
+                            FontSize="20" Padding="10 4"
+                            Margin="10 0 10 0"
+                            pu:ButtonHelper.HoverBrush="#FF0000">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xe69d;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                        <TextBlock Margin="10 0 0 0" Text="关闭" FontSize="20"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <Grid x:Name="waitPross" Visibility="{Binding WaitProssVis}" Background="Gray" Opacity="0.3" Grid.RowSpan="2">
+            <pu:Loading Width="100" HorizontalAlignment="Center"
+                            VerticalAlignment="Center" Height="100"
+                            LoadingStyle="Wave" Foreground="#3F3F3F"
+                            IsRunning="{Binding WaitPross}"/>
+        </Grid>
+    </Grid>
+</pu:WindowX>

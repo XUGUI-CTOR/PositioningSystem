@@ -12,9 +12,9 @@
   See http://www.galasoft.ch/mvvm
 */
 
+using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using Microsoft.Practices.ServiceLocation;
 
 namespace Position_BulletinBoard.ViewModel
 {
@@ -43,6 +43,7 @@ namespace Position_BulletinBoard.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<SettingViewModel>();
         }
 
         public MainViewModel Main
@@ -53,6 +54,11 @@ namespace Position_BulletinBoard.ViewModel
             }
         }
         
+        public SettingViewModel Setting
+        {
+            get => ServiceLocator.Current.GetInstance<SettingViewModel>();
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

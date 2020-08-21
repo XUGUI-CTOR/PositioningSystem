@@ -8,6 +8,8 @@ using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -41,6 +43,8 @@ namespace PositioningSystem.ViewModel
                 WorkHoursUpdate = int.Parse(list.Find(x => x.CKEY == "WorkHoursUpdate")?.CVALUE ?? "30");
                 NotWorkHoursUpdate = int.Parse(list.Find(x => x.CKEY == "NotWorkHoursUpdate")?.CVALUE ?? "30");
                 Foreground = GrayColor;
+                var datenow = DateTime.Now;
+                ClearTime = new DateTime(datenow.Year, datenow.Month, datenow.Day, 1, 0, 0);
             }
             catch (System.Exception ex)
             {
@@ -49,14 +53,19 @@ namespace PositioningSystem.ViewModel
             }
         }
 
-        public static SqlSugarClient SQLDB = new SqlSugarClient(new ConnectionConfig()
+        public static SqlSugarClient SQLDB
+        {
+            get
+            {
+                return new SqlSugarClient(new ConnectionConfig()
                 {
                     ConnectionString = App.ConnStr,
                     DbType = DbType.SqlServer,
+                    IsAutoCloseConnection = true,
                     InitKeyType = InitKeyType.SystemTable //初始化主键和自增列信息到ORM的方式
-                }
-        );
-
+                });
+            }
+        }
         #region MainViewModel属性
         private string _WorkHours;
         public string WorkHours
@@ -128,7 +137,69 @@ namespace PositioningSystem.ViewModel
         public void LoadedEvent()
         {
             Task.Run(TimeConsumingOperation);
+            Task.Run(ClearDataTimer);
         }
+        private DateTime ClearTime;
+        /// <summary>
+        /// 定时清理
+        /// </summary>
+        private void ClearDataTimer()
+        {
+            while (true)
+            {
+                try
+                {
+                    if (DateTime.Now >= ClearTime)//DateTime.Now >= ClearTime
+                    {
+                        var localSQLDB = MainViewModel.SQLDB;
+                        var cleartime = ClearTime.AddDays(-1);
+                        string sql = @"SELECT
+	                                    a.nID 
+                                    FROM
+	                                    CP_XPJCJLB a 
+                                    WHERE
+	                                    TJCSJ <= @date 
+	                                    AND not EXISTS (
+                                    SELECT
+	                                    * 
+                                    FROM
+	                                    (
+                                    SELECT
+	                                    d.nID 
+                                    FROM
+	                                    CP_XPJCJLB d
+	                                    RIGHT JOIN ( SELECT MAX( TJCSJ ) MaxTime, CXPH, CJZH FROM CP_XPJCJLB GROUP BY CXPH, CJZH ) c ON d.CJZH = c.CJZH 
+	                                    AND d.CXPH = c.CXPH 
+	                                    AND d.TJCSJ = c.MaxTime 
+	                                    ) b 
+                                    WHERE
+	                                    b.nID = a.nID 
+	                                    )";
+                        var ids = localSQLDB.Ado.SqlQuery<CP_XPJCJLB>(sql, new { date = cleartime }).Select(x => x.nID).ToList();
+                        int deletes = -1;
+                        if (ids != null && ids.Count > 0)
+                        {
+                            deletes = localSQLDB.Deleteable<CP_XPJCJLB>().In(ids.ToArray()).ExecuteCommand();
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        if (deletes > 0)
+                            ClearTime = ClearTime.AddDays(1);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+                finally 
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(60));
+                }
+            }
+        }
+
         private DateTime GoWorkStart;
         private DateTime GoWorkEnd;
         public void TimeConsumingOperation()
@@ -137,16 +208,19 @@ namespace PositioningSystem.ViewModel
             {
                 try
                 {
+                    //throw new Exception("wwwwww");
                     Foreground = GrayColor;
                     ShowMessage("正在更新");
                     LoadingIsRuning = true;
                     var list = AccessAPI();
                     foreach (var XPJCJLB in list)
                     {
-                        var result = SQLDB.Queryable<CP_XPJCJLB>().Where(x => x.CXPH == XPJCJLB.CXPH && x.CJZH == XPJCJLB.CJZH).Single();
-                        if (result != null)
+                        var SQLDB = MainViewModel.SQLDB;
+                        var result = SQLDB.Queryable<CP_XPJCJLB>().Where(x => x.CXPH == XPJCJLB.CXPH && x.CJZH == XPJCJLB.CJZH && x.TJCSJ == XPJCJLB.TJCSJ).Select(x => x.nID).First();
+                        if (result > 0)
                         {
-                            int success = SQLDB.Updateable(result).ExecuteCommand();
+                            XPJCJLB.nID = result;
+                            int success = SQLDB.Updateable(XPJCJLB).ExecuteCommand();
                             if (success <= 0)
                                 throw new Exception($"{JsonConvert.ToString(XPJCJLB)} 更新数据库失败");
                         }

@@ -1,0 +1,132 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:pu="clr-namespace:Panuon.UI.Silver;assembly=Panuon.UI.Silver"
+                    xmlns:local="clr-namespace:Position_BulletinBoard.Resouces.Style">
+    <Style x:Key="PanuonDataGridColumnHeader" TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="UIElement.SnapsToDevicePixels" Value="{StaticResource Default_SnapsToDevicePixels}" />
+        <Setter Property="FontSize" Value="{Binding FontSize, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+        <Setter Property="FontWeight" Value="500" />
+        <Setter Property="Background" Value="{Binding Path=(pu:DataGridHelper.HeaderBackground), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+        <Setter Property="Foreground" Value="{Binding Path=(pu:DataGridHelper.HeaderForeground), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+        <Setter Property="MinHeight" Value="{Binding Path=(pu:DataGridHelper.HeaderMinHeight), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+        <Setter Property="pu:DataGridHelper.ColumnVerticalContentAlignment" Value="{Binding Path=(pu:DataGridHelper.ColumnVerticalContentAlignment), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+        <Setter Property="pu:DataGridHelper.ColumnHorizontalContentAlignment" Value="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+        <Setter Property="pu:DataGridHelper.HeaderPadding" Value="{Binding Path=(pu:DataGridHelper.HeaderPadding), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Border Name="BdrHover" BorderThickness="0" Opacity="0" SnapsToDevicePixels="True" Background="{Binding Path=(pu:DataGridHelper.HoverBackground), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                        <Border Name="BdrPress" BorderThickness="0" Opacity="0" SnapsToDevicePixels="True" Background="{Binding Path=(pu:DataGridHelper.SelectedBackground), RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                        <Border VerticalAlignment="Bottom" BorderThickness="0,0,0,1" BorderBrush="{Binding HorizontalGridLinesBrush, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                        <Thumb Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Cursor="SizeWE" Background="{Binding Path=(pu:DataGridHelper.ResizeThumbBrush), RelativeSource={RelativeSource AncestorType=DataGrid}}" Width="{Binding Path=(pu:DataGridHelper.ResizeThumbThickness), RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource Add5Converter}}">
+                            <Control.Template>
+                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                    <Border Background="#00FFFFFF">
+                                        <Rectangle Fill="{TemplateBinding Background}" Margin="0,0,5,0" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Control.Template>
+                        </Thumb>
+                        <Grid Margin="{Binding Path=(pu:DataGridHelper.HeaderPadding), RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}}" VerticalAlignment="{Binding Path=(pu:DataGridHelper.ColumnVerticalContentAlignment), RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}}" HorizontalAlignment="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <Grid Name="GrdSort" Column="1">
+                                <Path Name="PathDesc" Visibility="Hidden" Height="15" Width="15" Fill="{TemplateBinding Foreground}" Data="M5,6 L14,6 L9.5,12" />
+                                <Path Name="PathAsc" Visibility="Hidden" Height="15" Width="15" Fill="{TemplateBinding Foreground}" Data="M5,10 L14,10 L9.5,4.5" />
+                            </Grid>
+                        </Grid>
+                        <Thumb Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Cursor="SizeWE" Background="{Binding Path=(pu:DataGridHelper.ResizeThumbBrush), RelativeSource={RelativeSource AncestorType=DataGrid}}" Width="{Binding Path=(pu:DataGridHelper.ResizeThumbThickness), RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource Add5Converter}}">
+                            <Control.Template>
+                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                    <Border Background="#00FFFFFF">
+                                        <Rectangle Fill="{TemplateBinding Background}" Margin="5,0,0,0" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Control.Template>
+                        </Thumb>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="UIElement.IsMouseOver" Value="True">
+                            <TriggerBase.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BdrHover" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </TriggerBase.EnterActions>
+                            <TriggerBase.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="BdrHover" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </TriggerBase.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="BdrPress" Property="UIElement.Opacity" Value="1" />
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="False" Binding="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource NotAlignmentCenterConverter}}" />
+                                <Condition Binding="{Binding SortDirection, RelativeSource={RelativeSource Self}}" Value="{x:Null}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="PathAsc" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PathDesc" Property="Visibility" Value="Collapsed" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="False" Binding="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource NotAlignmentCenterConverter}}" />
+                                <Condition Value="Descending" Binding="{Binding SortDirection, RelativeSource={RelativeSource Self}}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="PathAsc" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PathDesc" Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="False" Binding="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource NotAlignmentCenterConverter}}" />
+                                <Condition Value="Ascending" Binding="{Binding SortDirection, RelativeSource={RelativeSource Self}}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="PathAsc" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PathDesc" Property="Visibility" Value="Collapsed" />
+                        </MultiDataTrigger>
+                        <DataTrigger Value="False" Binding="{Binding CanUserSortColumns, Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                            <Setter TargetName="GrdSort" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True" Binding="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource NotAlignmentCenterConverter}}" />
+                                <Condition Binding="{Binding SortDirection, RelativeSource={RelativeSource Self}}" Value="{x:Null}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="PathAsc" Property="Visibility" Value="Hidden" />
+                            <Setter TargetName="PathDesc" Property="Visibility" Value="Hidden" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True" Binding="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource NotAlignmentCenterConverter}}" />
+                                <Condition Value="Descending" Binding="{Binding SortDirection, RelativeSource={RelativeSource Self}}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="PathAsc" Property="Visibility" Value="Hidden" />
+                            <Setter TargetName="PathDesc" Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True" Binding="{Binding Path=(pu:DataGridHelper.ColumnHorizontalContentAlignment), Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource NotAlignmentCenterConverter}}" />
+                                <Condition Value="Ascending" Binding="{Binding SortDirection, RelativeSource={RelativeSource Self}}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="PathAsc" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PathDesc" Property="Visibility" Value="Hidden" />
+                        </MultiDataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource  PanuonDataGridColumnHeader}">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+</ResourceDictionary>

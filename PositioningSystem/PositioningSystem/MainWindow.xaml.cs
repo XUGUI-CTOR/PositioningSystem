@@ -30,7 +30,7 @@ namespace PositioningSystem
             this.notifyIcon.ShowBalloonTip(2000);
             this.notifyIcon.Text = "定位系统服务";
             this.notifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Windows.Forms.Application.ExecutablePath);
-            //this.notifyIcon.Visible = true;
+            this.notifyIcon.Visible = true;
             //打开菜单项
             System.Windows.Forms.MenuItem open = new System.Windows.Forms.MenuItem("启动界面");
             open.Click += new EventHandler(Show);
@@ -50,7 +50,7 @@ namespace PositioningSystem
         private void Show(object sender, EventArgs e)
         {
             this.Visibility = System.Windows.Visibility.Visible;
-            notifyIcon.Visible = false;
+            notifyIcon.Visible = true;
             this.ShowInTaskbar = true;
             this.Activate();
         }
@@ -58,7 +58,6 @@ namespace PositioningSystem
         private void Hide(object sender, EventArgs e)
         {
             this.ShowInTaskbar = false;
-            this.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void Close(object sender, EventArgs e)
@@ -68,7 +67,6 @@ namespace PositioningSystem
         private void WindowX_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
-            notifyIcon.Visible = true;
             this.Visibility = System.Windows.Visibility.Hidden;
         }
     }
