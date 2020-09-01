@@ -1,4 +1,5 @@
-﻿using Position_BulletinBoard.Utils;
+﻿using Position_BulletinBoard.SQLDAL;
+using Position_BulletinBoard.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Position_BulletinBoard.DBModel
         /// </summary>
         public CP_YXSJSZ()
         {
+            _nID = -1;
         }
 
         private System.Int16 _nID;
@@ -43,6 +45,10 @@ namespace Position_BulletinBoard.DBModel
 
         public override bool ValidationModel()
         {
+            if (string.IsNullOrWhiteSpace(CKEY))
+                throw new Exception("唯一索引不可为空");
+            if (string.IsNullOrWhiteSpace(CVALUE))
+                throw new Exception("值不可为空");
             return true;
         }
     }

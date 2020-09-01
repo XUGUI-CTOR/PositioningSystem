@@ -33,5 +33,7 @@ namespace Position_BulletinBoard.SQLDAL
         public virtual bool Insert(T model) => CurrentDb.Insert(model);
 
         public virtual bool Update(T model) => CurrentDb.Update(model);
+
+        public virtual T GetById(dynamic id)=> CurrentDb.GetById(id);
     }
 }

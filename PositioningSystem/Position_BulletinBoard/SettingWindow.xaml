@@ -5,11 +5,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:cmd="clr-namespace:Position_BulletinBoard.Commands"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:convert="clr-namespace:Position_BulletinBoard.Utils"
         xmlns:local="clr-namespace:Position_BulletinBoard"
         x:Name="window"
         mc:Ignorable="d"
         Style="{StaticResource NeteaseMusicWindow}"
         Title="设置" Height="720" Width="1280">
+    <pu:WindowX.Resources>
+        <convert:DecimalConverter x:Key="decimalConvert"/>
+    </pu:WindowX.Resources>
     <pu:WindowX.DataContext>
         <Binding Path="Setting" Source="{StaticResource Locator}"/>
     </pu:WindowX.DataContext>
@@ -35,7 +39,7 @@
                      pu:TabControlHelper.TabControlStyle="Classic"
                      TabStripPlacement="Left">
             <TabControl.Items>
-                <TabItem Header="库区坐标信息" Foreground="Gray" FontSize="25">
+                <TabItem x:Name="tab_AreaPosition" Header="库区坐标信息" Foreground="Gray" FontSize="25">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50"/>
@@ -45,6 +49,7 @@
                             <Button Background="#C800FF35"
                                     VerticalAlignment="Center"
                                     Command="{Binding AddNew}"
+                                    CommandParameter="{Binding ElementName=tab_AreaPosition,Path=.}"
                             FontSize="20" Padding="10 5"
                             pu:ButtonHelper.HoverBrush="#97F8A5">
                                 <Button.Content>
@@ -56,6 +61,7 @@
                             </Button>
                             <Button Background="#C8F64E34"
                                     Command="{Binding RemoveCommand}"
+                                    CommandParameter="{Binding ElementName=tab_AreaPosition,Path=.}"
                                     VerticalAlignment="Center"
                             FontSize="20" Margin="30 0 0 0" Padding="10 5"
                             pu:ButtonHelper.HoverBrush="#F64E34">
@@ -81,21 +87,80 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="仓库编号"  Binding="{Binding cCKBH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                                 <DataGridTextColumn Header="库区编号"  Binding="{Binding cKuq,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶1_X"  Binding="{Binding nKQZB_X1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶1_Y"  Binding="{Binding nKQZB_Y1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶2_X"  Binding="{Binding nKQZB_X2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶2_Y"  Binding="{Binding nKQZB_Y2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶3_X"  Binding="{Binding nKQZB_X3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶3_Y"  Binding="{Binding nKQZB_Y3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶4_X"  Binding="{Binding nKQZB_X4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                <DataGridTextColumn Header="库区顶4_Y"  Binding="{Binding nKQZB_Y4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库区顶1_X"  
+                                 Binding="{Binding nKQZB_X1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="库区顶1_Y"  
+                                 Binding="{Binding nKQZB_Y1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="库区顶2_X"  
+                                 Binding="{Binding nKQZB_X2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="库区顶2_Y"  
+                                 Binding="{Binding nKQZB_Y2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="库区顶3_X"  
+                                 Binding="{Binding nKQZB_X3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="库区顶3_Y"  
+                                 Binding="{Binding nKQZB_Y3,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="库区顶4_X"  
+                                 Binding="{Binding nKQZB_X4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="库区顶4_Y"  
+                                 Binding="{Binding nKQZB_Y4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                 </TabItem>
-                <TabItem Header="运行时间配置" Foreground="Gray" FontSize="25">
+                <TabItem x:Name="tab_RunTime" Header="运行时间配置" Foreground="Gray" FontSize="25">
                     <Grid>
-                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="20 0 0 0" Orientation="Horizontal">
+                            <Button Background="#C800FF35"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding AddNew}"
+                                    CommandParameter="{Binding ElementName=tab_RunTime,Path=.}"
+                            FontSize="20" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#97F8A5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe664;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="新增" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Background="#C8F64E34"
+                                    Command="{Binding RemoveCommand}"
+                                    CommandParameter="{Binding ElementName=tab_RunTime,Path=.}"
+                                    VerticalAlignment="Center"
+                            FontSize="20" Margin="30 0 0 0" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#F64E34">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe66f;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="删除" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <DataGrid Margin="10 0 2 0" Grid.Row="1" 
+                                  
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  ItemsSource="{Binding YXSJSZs}"
+                                  SelectedItem="{Binding SelectYXSJ}"
+                                  CanUserSortColumns="False"
+                                  pu:DataGridHelper.HeaderMinHeight="40"
+                                  pu:DataGridHelper.ResizeThumbThickness="1"
+                                  pu:DataGridHelper.SelectedBackground="#44B5B5B5"
+                                  pu:DataGridHelper.HoverBackground="#22B5B5B5">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="唯一键" Width="Auto" MinWidth="200"  
+                                 Binding="{Binding CKEY,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="当前值" Width="Auto" MinWidth="150" 
+                                 Binding="{Binding CVALUE,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="说明" Width="*"  
+                                 Binding="{Binding CEXPLAIN,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </Grid>
                 </TabItem>
             </TabControl.Items>
@@ -128,11 +193,11 @@
                 </Button.Content>
             </Button>
         </StackPanel>
-        <Grid x:Name="waitPross" Visibility="{Binding WaitProssVis}" Background="Gray" Opacity="0.3" Grid.RowSpan="2">
+        <!--<Grid x:Name="waitPross" Visibility="{Binding WaitProssVis}" Background="Gray" Opacity="0.3" Grid.RowSpan="2">
             <pu:Loading Width="100" HorizontalAlignment="Center"
                             VerticalAlignment="Center" Height="100"
-                            LoadingStyle="Wave" Foreground="#3F3F3F"
+                            LoadingStyle="Wave" Foreground="Black"
                             IsRunning="{Binding WaitPross}"/>
-        </Grid>
+        </Grid>-->
     </Grid>
 </pu:WindowX>

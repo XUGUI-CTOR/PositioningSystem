@@ -80,15 +80,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\WindowCommands.cs" />
+    <Compile Include="DBModel\CK_JZXGXXB.cs" />
     <Compile Include="DBModel\CK_JZXXB.cs" />
     <Compile Include="DBModel\CK_KQZBXXB.cs" />
+    <Compile Include="DBModel\CK_TPDDB.cs" />
+    <Compile Include="DBModel\CP_CKKWB.cs" />
+    <Compile Include="DBModel\CP_KCKWB.cs" />
+    <Compile Include="DBModel\CP_XPJCJLB.cs" />
     <Compile Include="DBModel\CP_YXSJSZ.cs" />
     <Compile Include="SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SQLDAL\CK_KQZBXXBMamager.cs" />
     <Compile Include="SQLDAL\DbContext.cs" />
+    <Compile Include="SQLDAL\Mamager.cs" />
     <Compile Include="SQLDAL\SQLDbHelper.cs" />
+    <Compile Include="Utils\Converter.cs" />
     <Compile Include="Utils\ModelBase.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />

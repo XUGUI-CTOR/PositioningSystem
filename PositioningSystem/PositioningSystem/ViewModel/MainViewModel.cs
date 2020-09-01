@@ -219,10 +219,11 @@ namespace PositioningSystem.ViewModel
                         var result = SQLDB.Queryable<CP_XPJCJLB>().Where(x => x.CXPH == XPJCJLB.CXPH && x.CJZH == XPJCJLB.CJZH && x.TJCSJ == XPJCJLB.TJCSJ).Select(x => x.nID).First();
                         if (result > 0)
                         {
-                            XPJCJLB.nID = result;
-                            int success = SQLDB.Updateable(XPJCJLB).ExecuteCommand();
-                            if (success <= 0)
-                                throw new Exception($"{JsonConvert.ToString(XPJCJLB)} 更新数据库失败");
+                            //XPJCJLB.nID = result;
+                            //int success = SQLDB.Updateable(XPJCJLB).ExecuteCommand();
+                            //if (success <= 0)
+                            //    throw new Exception($"{JsonConvert.ToString(XPJCJLB)} 更新数据库失败");
+                            continue;
                         }
                         else
                         {
