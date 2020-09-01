@@ -73,7 +73,11 @@ namespace Position_BulletinBoard.DBModel
 
         public override bool ValidationModel()
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(cCKBH))
+                throw new Exception("仓库编号不能为空");
+            if (string.IsNullOrWhiteSpace(cJZBH))
+                throw new Exception("基站编号不能为空");
+            return true;
         }
     }
 }

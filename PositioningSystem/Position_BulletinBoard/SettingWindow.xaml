@@ -7,12 +7,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:convert="clr-namespace:Position_BulletinBoard.Utils"
         xmlns:local="clr-namespace:Position_BulletinBoard"
+        xmlns:util="clr-namespace:Position_BulletinBoard.Utils"
         x:Name="window"
         mc:Ignorable="d"
         Style="{StaticResource NeteaseMusicWindow}"
         Title="设置" Height="720" Width="1280">
     <pu:WindowX.Resources>
         <convert:DecimalConverter x:Key="decimalConvert"/>
+        <convert:NullableDecimalConverter x:Key="nullableDecimalConverter"/>
     </pu:WindowX.Resources>
     <pu:WindowX.DataContext>
         <Binding Path="Setting" Source="{StaticResource Locator}"/>
@@ -37,6 +39,7 @@
                      pu:TabControlHelper.ItemPadding="20 0"
                      pu:TabControlHelper.SelectedForeground="LightGray"
                      pu:TabControlHelper.TabControlStyle="Classic"
+                     SelectedIndex="{Binding SelectTabIndex,Mode=TwoWay}"
                      TabStripPlacement="Left">
             <TabControl.Items>
                 <TabItem x:Name="tab_AreaPosition" Header="库区坐标信息" Foreground="Gray" FontSize="25">
@@ -80,6 +83,7 @@
                                   ItemsSource="{Binding KQZBXXB}"
                                   SelectedItem="{Binding SelectedKQXX}"
                                   CanUserSortColumns="False"
+                                  pu:DataGridHelper.CellPadding="0"
                                   pu:DataGridHelper.HeaderMinHeight="40"
                                   pu:DataGridHelper.ResizeThumbThickness="1"
                                   pu:DataGridHelper.SelectedBackground="#44B5B5B5"
@@ -103,6 +107,237 @@
                                  Binding="{Binding nKQZB_X4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
                                 <DataGridTextColumn Header="库区顶4_Y"  
                                  Binding="{Binding nKQZB_Y4,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem x:Name="tab_BaseStation" Header="基站信息登记" Foreground="Gray" FontSize="25">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="20 0 0 0" Orientation="Horizontal">
+                            <Button Background="#C800FF35"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding AddNew}"
+                                    CommandParameter="{Binding ElementName=tab_BaseStation,Path=.}"
+                            FontSize="20" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#97F8A5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe664;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="新增" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Background="#C8F64E34"
+                                    Command="{Binding RemoveCommand}"
+                                    CommandParameter="{Binding ElementName=tab_BaseStation,Path=.}"
+                                    VerticalAlignment="Center"
+                            FontSize="20" Margin="30 0 0 0" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#F64E34">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe66f;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="删除" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        
+                        <DataGrid Margin="10 0 2 0" Grid.Row="1" 
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  ItemsSource="{Binding JZXXB}"
+                                  SelectedItem="{Binding SelectJZXX}"
+                                  CanUserSortColumns="False"
+                                  pu:DataGridHelper.CellPadding="0"
+                                  pu:DataGridHelper.HeaderMinHeight="40"
+                                  
+                                  RowHeight="35"
+                                  pu:DataGridHelper.ResizeThumbThickness="1"
+                                  pu:DataGridHelper.SelectedBackground="#44B5B5B5"
+                                  pu:DataGridHelper.HoverBackground="#22B5B5B5">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="仓库编号" MinWidth="80" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Margin="0" SelectedValue="{Binding cCKBH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      DisplayMemberPath="cCKBH" SelectedValuePath="cCKBH"
+                                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.KQZBXXB}" 
+                                                      Height="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=RowHeight}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="基站编号"  Binding="{Binding cJZBH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="基站X坐标"  
+                                 Binding="{Binding nJZZB_X,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="基站Y坐标"  
+                                 Binding="{Binding nJZZB_Y,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="基站安装高度"  
+                                 Binding="{Binding nJZAZGD,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="基站检测最大距离"  
+                                 Binding="{Binding nJZJCZDJL,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource decimalConvert}}"/>
+                                <DataGridTextColumn Header="基站可检测半径"  
+                                 Binding="{Binding nJZKJCBJ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource nullableDecimalConverter}}"/>
+                                <DataGridTextColumn Header="备注" Width="*" 
+                                 Binding="{Binding cBeiz,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem x:Name="tab_Master_Slave" Header="主从基站设置" Foreground="Gray" FontSize="25">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="20 0 0 0" Orientation="Horizontal">
+                            <Button Background="#C800FF35"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding AddNew}"
+                                    CommandParameter="{Binding ElementName=tab_Master_Slave,Path=.}"
+                            FontSize="20" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#97F8A5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe664;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="新增" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Background="#C8F64E34"
+                                    Command="{Binding RemoveCommand}"
+                                    CommandParameter="{Binding ElementName=tab_Master_Slave,Path=.}"
+                                    VerticalAlignment="Center"
+                            FontSize="20" Margin="30 0 0 0" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#F64E34">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe66f;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="删除" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+
+                        <DataGrid Margin="10 0 2 0" Grid.Row="1" 
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  ItemsSource="{Binding MasterSlave}"
+                                  SelectedItem="{Binding SelectMasterSlave}"
+                                  CanUserSortColumns="False"
+                                  pu:DataGridHelper.CellPadding="0"
+                                  pu:DataGridHelper.HeaderMinHeight="40" 
+                                  RowHeight="35"
+                                  pu:DataGridHelper.ResizeThumbThickness="1"
+                                  pu:DataGridHelper.SelectedBackground="#44B5B5B5"
+                                  pu:DataGridHelper.HoverBackground="#22B5B5B5">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="主基站号" MinWidth="150" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Margin="0" SelectedValue="{Binding cZJZH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      DisplayMemberPath="cJZBH" SelectedValuePath="cJZBH"
+                                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.JZXXB}" 
+                                                      Height="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=RowHeight}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="相关基站号" MinWidth="150" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Margin="0" SelectedValue="{Binding cXGJZH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      DisplayMemberPath="cJZBH" SelectedValuePath="cJZBH"
+                                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.JZXXB}" 
+                                                      Height="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=RowHeight}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="基站X轴重叠区间1"  
+                                 Binding="{Binding nJZCDQJ1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource nullableDecimalConverter}}"/>
+                                <DataGridTextColumn Header="基站X轴重叠区间2"  
+                                 Binding="{Binding nJZCDQJ2,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource nullableDecimalConverter}}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem x:Name="tab_StorageLocation" Header="成品库位设置" Foreground="Gray" FontSize="25">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="20 0 0 0" Orientation="Horizontal">
+                            <Button Background="#C800FF35"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding AddNew}"
+                                    CommandParameter="{Binding ElementName=tab_StorageLocation,Path=.}"
+                            FontSize="20" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#97F8A5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe664;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="新增" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Background="#C8F64E34"
+                                    Command="{Binding RemoveCommand}"
+                                    CommandParameter="{Binding ElementName=tab_StorageLocation,Path=.}"
+                                    VerticalAlignment="Center"
+                            FontSize="20" Margin="30 0 0 0" Padding="10 5"
+                            pu:ButtonHelper.HoverBrush="#F64E34">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xe66f;" FontSize="25" FontFamily="/Resouces/NeteaseExample/#iconfont"/>
+                                        <TextBlock Margin="10 0 0 0" Text="删除" FontSize="20"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+
+                        <DataGrid Margin="10 0 2 0" Grid.Row="1" 
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  ItemsSource="{Binding Storages}"
+                                  SelectedItem="{Binding SelectStorage}"
+                                  CanUserSortColumns="False"
+                                  pu:DataGridHelper.CellPadding="0"
+                                  pu:DataGridHelper.HeaderMinHeight="40" 
+                                  RowHeight="35"
+                                  pu:DataGridHelper.ResizeThumbThickness="1"
+                                  pu:DataGridHelper.SelectedBackground="#44B5B5B5"
+                                  pu:DataGridHelper.HoverBackground="#22B5B5B5">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="仓库编号" MinWidth="150" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Margin="0" SelectedValue="{Binding cCKBH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      DisplayMemberPath="cCKBH" SelectedValuePath="cCKBH"
+                                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.KQZBXXB}" 
+                                                      Height="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=RowHeight}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="库区编号" MinWidth="150" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Margin="0" SelectedValue="{Binding cKQBH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      DisplayMemberPath="cKuq" SelectedValuePath="cKuq"
+                                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.KQZBXXB}" 
+                                                      Height="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=RowHeight}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="库位编号"  
+                                 Binding="{Binding cKWBH,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="最大堆放数"  
+                                 Binding="{Binding nZDDFS,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn Header="库位描述"  
+                                 Binding="{Binding cKWMS,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -193,11 +428,11 @@
                 </Button.Content>
             </Button>
         </StackPanel>
-        <!--<Grid x:Name="waitPross" Visibility="{Binding WaitProssVis}" Background="Gray" Opacity="0.3" Grid.RowSpan="2">
+        <Grid x:Name="waitPross" Visibility="{Binding WaitProssVis}" Background="Gray" Opacity="0.3" Grid.RowSpan="2">
             <pu:Loading Width="100" HorizontalAlignment="Center"
                             VerticalAlignment="Center" Height="100"
                             LoadingStyle="Wave" Foreground="Black"
                             IsRunning="{Binding WaitPross}"/>
-        </Grid>-->
+        </Grid>
     </Grid>
 </pu:WindowX>

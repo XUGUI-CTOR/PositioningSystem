@@ -15,4 +15,17 @@ namespace Position_BulletinBoard.SQLDAL
     public class CP_YXSJSZBMamager : DbContext<CP_YXSJSZ>
     {
     }
+
+    public class CP_JZXXBMamager : DbContext<CK_JZXXB>
+    { 
+    }
+
+    public class CK_JZXGXXBMamager : DbContext<CK_JZXGXXB>
+    { 
+    }
+
+    public class CP_CKKWBMamager : DbContext<CP_CKKWB>
+    { 
+    
+    }
 }

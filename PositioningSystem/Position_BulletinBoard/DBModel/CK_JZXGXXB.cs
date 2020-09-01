@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Position_BulletinBoard.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Position_BulletinBoard.DBModel
 {
-    public class CK_JZXGXXB
+    public class CK_JZXGXXB:ModelBase<CK_JZXGXXB>
     {
         /// <summary>
         /// 
@@ -45,5 +46,16 @@ namespace Position_BulletinBoard.DBModel
         /// 基站X轴重叠区间2 X坐标终点：x2
         /// </summary>
         public System.Decimal? nJZCDQJ2 { get { return this._nJZCDQJ2; } set { this._nJZCDQJ2 = value; } }
+
+        public override bool ValidationModel()
+        {
+            if (string.IsNullOrWhiteSpace(cZJZH))
+                throw new Exception("主基站号不能为空");
+            if (string.IsNullOrWhiteSpace(cXGJZH))
+                throw new Exception("相关基站号不能为空");
+            if (cZJZH == cXGJZH)
+                throw new Exception("主从基站号不能相同");
+            return true;
+        }
     }
 }

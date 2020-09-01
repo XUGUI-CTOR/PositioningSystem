@@ -1,6 +1,7 @@
 ﻿using Position_BulletinBoard.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,6 @@ namespace Position_BulletinBoard.DBModel
         {
             nID = -1;
         }
-
         private System.Int16 _nID;
         /// <summary>
         /// 主键id
@@ -32,7 +32,6 @@ namespace Position_BulletinBoard.DBModel
         /// 仓库编号
         /// </summary>
         public System.String cCKBH { get { return this._cCKBH; } set { this._cCKBH = value; } }
-
         private System.String _cKuq;
         /// <summary>
         /// 库区编号 仓库内唯一号

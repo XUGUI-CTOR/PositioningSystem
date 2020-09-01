@@ -96,6 +96,7 @@
     <Compile Include="SQLDAL\SQLDbHelper.cs" />
     <Compile Include="Utils\Converter.cs" />
     <Compile Include="Utils\ModelBase.cs" />
+    <Compile Include="Utils\MyDataGridHelper.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

@@ -21,4 +21,21 @@ namespace Position_BulletinBoard.Utils
             return value.ToString().EndsWith(".") ? "." : value;
         }
     }
+
+    public class NullableDecimalConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return string.Empty;
+            return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+            return value.ToString().EndsWith(".") ? "." : value;
+        }
+    }
 }

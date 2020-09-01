@@ -25,12 +25,21 @@ namespace Position_BulletinBoard.ViewModel
             InitDataSource();
         }
 
+        private int _SelectTabIndex;
+        public int SelectTabIndex
+        {
+            get => _SelectTabIndex;
+            set => Set(ref _SelectTabIndex, value);
+        }
+
         private void InitDataSource()
         {
             KQZBXXB = toObserable(new CK_KQZBXXBMamager().GetList());
             YXSJSZs = toObserable(new CP_YXSJSZBMamager().GetList());
+            JZXXB = toObserable(new CP_JZXXBMamager().GetList());
+            MasterSlave = toObserable(new CK_JZXGXXBMamager().GetList());
+            Storages = toObserable(new CP_CKKWBMamager().GetList());
         }
-
         public static ObservableCollection<T> toObserable<T>(List<T> list)
         {
             ObservableCollection<T> rets = new ObservableCollection<T>();
@@ -76,6 +85,53 @@ namespace Position_BulletinBoard.ViewModel
         }
         #endregion
 
+        #region 基站信息登记
+        private ObservableCollection<CK_JZXXB> jzxxb = new ObservableCollection<CK_JZXXB>();
+        private List<CK_JZXXB> jzxxDelete = new List<CK_JZXXB>();
+        public ObservableCollection<CK_JZXXB> JZXXB
+        {
+            get => jzxxb;
+            set => Set(ref jzxxb, value);
+        }
+        private CK_JZXXB _SelectJZXX;
+        public CK_JZXXB SelectJZXX
+        {
+            get => _SelectJZXX;
+            set => Set(ref _SelectJZXX, value);
+        }
+        #endregion
+
+        #region 主从登记
+        private ObservableCollection<CK_JZXGXXB> _MasterSlave = new ObservableCollection<CK_JZXGXXB>();
+        private ObservableCollection<CK_JZXGXXB> MasterSlaveDelete = new ObservableCollection<CK_JZXGXXB>();
+        public ObservableCollection<CK_JZXGXXB> MasterSlave
+        {
+            get => _MasterSlave;
+            set => Set(ref _MasterSlave, value);
+        }
+        private CK_JZXGXXB _SelectMasterSlave;
+        public CK_JZXGXXB SelectMasterSlave
+        {
+            get => _SelectMasterSlave;
+            set => Set(ref _SelectMasterSlave, value);
+        }
+        #endregion
+
+        #region 成品库位设置
+        private ObservableCollection<CP_CKKWB> _Storages = new ObservableCollection<CP_CKKWB>();
+        private List<CP_CKKWB> StorageDelete = new List<CP_CKKWB>();
+        public ObservableCollection<CP_CKKWB> Storages
+        {
+            get => _Storages;
+            set => Set(ref _Storages, value);
+        }
+        private CP_CKKWB _SelectStorags;
+        public CP_CKKWB SelectStorage
+        {
+            get => _SelectStorags;
+            set => Set(ref _SelectStorags, value);
+        }
+        #endregion
         private RelayCommand<TabItem> addNew;
         public RelayCommand<TabItem> AddNew
         {
@@ -112,6 +168,15 @@ namespace Position_BulletinBoard.ViewModel
                 case "tab_RunTime":
                     YXSJSZs.Add(new CP_YXSJSZ());
                     break;
+                case "tab_BaseStation":
+                    JZXXB.Add(new CK_JZXXB());
+                    break;
+                case "tab_Master_Slave":
+                    MasterSlave.Add(new CK_JZXGXXB());
+                    break;
+                case "tab_StorageLocation":
+                    Storages.Add(new CP_CKKWB());
+                    break;
             }
         }
 
@@ -134,8 +199,35 @@ namespace Position_BulletinBoard.ViewModel
                         ShowMessageBoxX("", "请选择要移除的配置信息");
                         return;
                     }
-                    _YXSJSZs.Remove(_SelectYXSJ);
                     yxsjszDelete.Add(_SelectYXSJ);
+                    _YXSJSZs.Remove(_SelectYXSJ);
+                    break;
+                case "tab_BaseStation":
+                    if (_SelectJZXX == null)
+                    {
+                        ShowMessageBoxX("", "请选择要移除的基站");
+                        return;
+                    }
+                    jzxxDelete.Add(_SelectJZXX);
+                    jzxxb.Remove(_SelectJZXX);
+                    break;
+                case "tab_Master_Slave":
+                    if (SelectMasterSlave == null)
+                    {
+                        ShowMessageBoxX("", "请选择要删除的行");
+                        return;
+                    }
+                    MasterSlaveDelete.Add(SelectMasterSlave);
+                    MasterSlave.Remove(SelectMasterSlave);
+                    break;
+                case "tab_StorageLocation":
+                    if(SelectStorage == null)
+                    {
+                        ShowMessageBoxX("", "请选择要删除的行");
+                        return;
+                    }
+                    StorageDelete.Add(SelectStorage);
+                    Storages.Remove(SelectStorage);
                     break;
             }
         }
@@ -192,7 +284,15 @@ namespace Position_BulletinBoard.ViewModel
         {
             try
             {
+                SelectTabIndex = 0;
                 SaveKQZBXXB();
+                SelectTabIndex = 1;
+                SaveJZXX();
+                SelectTabIndex = 2;
+                SaveMasterSlave();
+                SelectTabIndex = 3;
+                SaveStorages();
+                SelectTabIndex = 4;
                 SaveYXSJPZ();
             }
             catch(Exception)
@@ -200,27 +300,100 @@ namespace Position_BulletinBoard.ViewModel
             }
         }
         /// <summary>
+        /// 保存成品库位设置
+        /// </summary>
+        private void SaveStorages()
+        {
+            CP_CKKWBMamager mamager = new CP_CKKWBMamager();
+            foreach (var item in Storages)
+            {
+                try
+                {
+                    item.ValidationModel();
+                    if (item.nID <= 0)
+                    {
+                        if (Storages.Where(x => x.cCKBH == item.cCKBH && x.cKQBH == item.cKQBH).Count() > 1)
+                            throw new Exception("设置重复的仓库和库区");
+                        item.cKWM = $"{item.cCKBH}-{item.cKQBH}-{item.cKWBH??string.Empty}";
+                        item.nID = (short)mamager.CurrentDb.AsInsertable(item).ExecuteReturnIdentity();
+                    }
+                    else
+                    {
+                        if (Storages.Where(x => x.cCKBH == item.cCKBH && x.cKQBH == item.cKQBH&&x.nID>0).Count() > 1)
+                            throw new Exception("设置重复的仓库和库区");
+                        mamager.CurrentDb.AsUpdateable(item).ExecuteCommandHasChange();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ShowMessageBoxX("", ex.Message, MessageBoxIcon.Error);
+                    SelectStorage = item;
+                    throw ex;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 保存主从关系
+        /// </summary>
+        private void SaveMasterSlave()
+        {
+            CK_JZXGXXBMamager mamager = new CK_JZXGXXBMamager();
+            foreach (var item in MasterSlave)
+            {
+                try
+                {
+                    item.ValidationModel();
+                    if (item.nID <= 0)
+                    {
+                        item.nID = (short)mamager.CurrentDb.AsInsertable(item).ExecuteReturnIdentity();
+                    }
+                    else
+                    {
+                        mamager.CurrentDb.AsUpdateable(item).ExecuteCommandHasChange();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ShowMessageBoxX("", ex.Message, MessageBoxIcon.Error);
+                    SelectMasterSlave = item;
+                    throw ex;
+                }
+            }
+            foreach (var item in MasterSlaveDelete)
+            {
+                if (item.nID > 0)
+                    mamager.Delete(item.nID);
+            }
+            MasterSlaveDelete.Clear();
+        }
+
+        /// <summary>
         /// 保存库区坐标信息
         /// </summary>
         private void SaveKQZBXXB()
         {
             CK_KQZBXXBMamager mamager = null;
+            if (mamager == null)
+                mamager = new CK_KQZBXXBMamager();
             foreach (var item in kqzbxxb)
             {
                 try
                 {
-                    if (mamager == null)
-                        mamager = new CK_KQZBXXBMamager();
+                    item.ValidationModel();
                     if (item.nID == -1)
                     {
-                        item.ValidationModel();
-                        if (mamager.CurrentDb.GetSingle(m => m.cCKBH == item.cCKBH && m.cKuq == item.cKuq) != null)
+                        
+                        if (kqzbxxb.Where(x => x.cKuq == item.cKuq&&x.cCKBH == item.cCKBH).Count() > 1)
                             throw new Exception("当前库区已存在，不可重复添加");
-                        mamager.CurrentDb.AsInsertable(item).ExecuteCommand();
+                        item.nID = (short)mamager.CurrentDb.AsInsertable(item).ExecuteReturnIdentity();
                     }
                     else
                     {
-                        item.ValidationModel();
+                        if (kqzbxxb.Where(x => x.cKuq == item.cKuq && x.cCKBH == item.cCKBH&&x.nID>0).Count() > 1)
+                            throw new Exception("当前库区已存在，不可重复添加");
                         mamager.CurrentDb.AsUpdateable(item).ExecuteCommandHasChange();
                     }
 
@@ -251,16 +424,18 @@ namespace Position_BulletinBoard.ViewModel
             {
                 try
                 {
+                    item.ValidationModel();
                     if (item.nID <= 0)
                     {
-                        item.ValidationModel();
-                        if (new CP_YXSJSZBMamager().GetById(item.nID) != null)
+                        
+                        if (YXSJSZs.Where(x => x.CKEY == item.CKEY).Count() > 1)
                             throw new Exception("当前项唯一索引已存在");
-                        mamager.CurrentDb.AsInsertable(item).ExecuteCommand();
+                       item.nID = (short)mamager.CurrentDb.AsInsertable(item).ExecuteReturnIdentity();
                     }
                     else
                     {
-                        item.ValidationModel();
+                        if (YXSJSZs.Where(x => x.CKEY == item.CKEY&&x.nID>0).Count() > 1)
+                            throw new Exception("当前项唯一索引已存在");
                         mamager.CurrentDb.AsUpdateable(item).ExecuteCommandHasChange();
                     }
                 }
@@ -277,6 +452,46 @@ namespace Position_BulletinBoard.ViewModel
                     mamager.Delete(item.nID);
             }
             yxsjszDelete.Clear();
+        }
+        /// <summary>
+        /// 保存基站信息
+        /// </summary>
+        private void SaveJZXX()
+        {
+            CP_JZXXBMamager mamager = null;
+            if (mamager == null)
+                mamager = new CP_JZXXBMamager();
+            foreach (var item in JZXXB)
+            {
+                try
+                {
+                    item.ValidationModel();
+                    if (item.nID <= 0)
+                    {
+                        if (JZXXB.Where(x => x.cJZBH == item.cJZBH).Count() > 1)
+                            throw new Exception("当前机台班号已存在");
+                        item.nID = (short)mamager.CurrentDb.AsInsertable(item).ExecuteReturnIdentity();
+                    }
+                    else
+                    {
+                        if (JZXXB.Where(x => x.cJZBH == item.cJZBH&&x.nID>0).Count() > 1)
+                            throw new Exception("当前机台班号已存在");
+                        mamager.CurrentDb.AsUpdateable(item).ExecuteCommandHasChange();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowMessageBoxX("", ex.Message, MessageBoxIcon.Error);
+                    SelectJZXX = item;
+                    throw ex;
+                }
+            }
+            foreach (var item in jzxxDelete)
+            {
+                if (item.nID > 0)
+                    mamager.Delete(item.nID);
+            }
+            jzxxDelete.Clear();
         }
         #endregion
     }

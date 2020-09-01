@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Position_BulletinBoard.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Position_BulletinBoard.DBModel
 {
-    public class CP_CKKWB
+    public class CP_CKKWB:ModelBase<CP_CKKWB>
     {
         /// <summary>
         /// 
@@ -57,5 +58,16 @@ namespace Position_BulletinBoard.DBModel
         /// 库位描述	用文字描述具体位置
         /// </summary>
         public System.String cKWMS { get { return this._cKWMS; } set { this._cKWMS = value; } }
+
+        public override bool ValidationModel()
+        {
+            if (string.IsNullOrWhiteSpace(cCKBH))
+                throw new Exception("仓库编号不能为空");
+            if (string.IsNullOrWhiteSpace(cKQBH))
+                throw new Exception("库区编号不能为空");
+            if (nZDDFS <= 0)
+                throw new Exception("最大堆放数堆叠数必须大于0");
+            return true;
+        }
     }
 }

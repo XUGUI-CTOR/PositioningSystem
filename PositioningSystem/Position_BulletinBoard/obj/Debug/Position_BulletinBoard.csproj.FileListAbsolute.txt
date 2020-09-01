@@ -1,4 +1,3 @@
-D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\Position_BulletinBoard.csprojAssemblyReference.cache
 D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\MainWindow.g.cs
 D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\SettingWindow.g.cs
 D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\App.g.cs
