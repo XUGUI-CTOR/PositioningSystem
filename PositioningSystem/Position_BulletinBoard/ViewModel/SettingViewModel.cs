@@ -5,6 +5,7 @@ using Panuon.UI.Silver;
 using Panuon.UI.Silver.Core;
 using Position_BulletinBoard.DBModel;
 using Position_BulletinBoard.SQLDAL;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +18,7 @@ using System.Windows.Controls;
 
 namespace Position_BulletinBoard.ViewModel
 {
+    [DoNotNotify]
     public class SettingViewModel:ViewModelBase
     {
 
@@ -64,8 +66,6 @@ namespace Position_BulletinBoard.ViewModel
             get => _SelectedKQXX;
             set => Set(ref _SelectedKQXX, value);
         }
-
-
         #endregion
 
         #region 运行时间配置
@@ -279,24 +279,25 @@ namespace Position_BulletinBoard.ViewModel
             WaitPross = false;
             WaitProssVis = Visibility.Collapsed;
         }
-
         private void SaveDBInfo()
         {
+            int index = default;
             try
             {
-                SelectTabIndex = 0;
+                index = 0;
                 SaveKQZBXXB();
-                SelectTabIndex = 1;
+                index = 1;
                 SaveJZXX();
-                SelectTabIndex = 2;
+                index = 2;
                 SaveMasterSlave();
-                SelectTabIndex = 3;
+                index = 3;
                 SaveStorages();
-                SelectTabIndex = 4;
+                index = 4;
                 SaveYXSJPZ();
             }
             catch(Exception)
             {
+                SelectTabIndex = index;
             }
         }
         /// <summary>
@@ -347,10 +348,14 @@ namespace Position_BulletinBoard.ViewModel
                     item.ValidationModel();
                     if (item.nID <= 0)
                     {
+                        if (MasterSlave.Where(x => (x.cZJZH == item.cZJZH && x.cXGJZH == item.cXGJZH) || (x.cZJZH == item.cXGJZH && x.cXGJZH == item.cZJZH)).Count() > 1)
+                            throw new Exception("当前主从关系已存在，或者从主关系已存在");
                         item.nID = (short)mamager.CurrentDb.AsInsertable(item).ExecuteReturnIdentity();
                     }
                     else
                     {
+                        if (MasterSlave.Where(x => (x.cZJZH == item.cZJZH && x.cXGJZH == item.cXGJZH) || (x.cZJZH == item.cXGJZH && x.cXGJZH == item.cZJZH)&&x.nID>0).Count() > 1)
+                            throw new Exception("当前主从关系已存在，或者从主关系已存在");
                         mamager.CurrentDb.AsUpdateable(item).ExecuteCommandHasChange();
                     }
 

@@ -1,34 +1,32 @@
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using PropertyChanged;
 
 namespace Position_BulletinBoard.ViewModel
 {
-    /// <summary>
-    /// This class contains properties that the main View can data bind to.
-    /// <para>
-    /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
-    /// </para>
-    /// <para>
-    /// You can also use Blend to data bind with the tool's support.
-    /// </para>
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        private RelayCommand _SetOpen;
         /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
+        /// 打开设置模块命令
         /// </summary>
+        public RelayCommand SetOpen
+        {
+            get => _SetOpen ?? (_SetOpen = new RelayCommand(SetOpenCommand));
+            set => Set(ref _SetOpen, value);
+        }
+
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+        }
+        /// <summary>
+        /// 打开设置模块
+        /// </summary>
+        private void SetOpenCommand()
+        {
+            var window = new SettingWindow();
+            window.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            window.ShowDialog();
         }
     }
 }

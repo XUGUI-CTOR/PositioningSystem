@@ -34,3 +34,7 @@ D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\o
 D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\Position_BulletinBoard.exe
 D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\Position_BulletinBoard.pdb
 D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\Resouces\Style\DataGridStyle.baml
+D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\Position_BulletinBoard.csproj.Fody.CopyLocal.cache
+D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\Position_BulletinBoard.csprojAssemblyReference.cache
+D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\UserControl\ReservoirArea.g.cs
+D:\VisualStudio2019\PositioningSystem\PositioningSystem\Position_BulletinBoard\obj\Debug\UserControl\ReservoirArea.baml

@@ -188,7 +188,7 @@ namespace Position_BulletinBoard.SQLDAL
                     //第三步执行新增
                     adapter.Update(dt.Select(null, null, DataViewRowState.Added));//自动匹配DataTable与前面查询结果中的不同，新增的执行新增
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     result = false;
                 }
